@@ -1,0 +1,79 @@
+The most important thing to understand
+First request : 
+
+Idempotency-Key: abc-123
+        ↓
+Does abc-123 exist?
+        ↓
+       NO
+        ↓
+Process payment
+        ↓
+TXN-123
+        ↓
+Store:
+abc-123 → TXN-123
+
+Second request : 
+
+Idempotency-Key: abc-123
+        ↓
+Does abc-123 exist?
+        ↓
+       YES
+        ↓
+Don't process payment
+        ↓
+Return TXN-123
+
+That's idempotency.
+
+But our implementation has a BIG problem ⚠️
+
+We intentionally used:
+
+HashMap
+
+This works for learning, but we cannot use this as our production implementation.
+
+Why?
+
+Imagine we have:
+
+                    Load Balancer
+                         |
+              ┌──────────┴──────────┐
+              ↓                     ↓
+        Payment Service 1     Payment Service 2
+              |                     |
+           HashMap 1              HashMap 2
+
+First request goes to Server 1:
+
+abc-123 → TXN-1001
+
+Then retry goes to Server 2:
+
+abc-123 → ????
+
+Server 2 doesn't know about abc-123.
+
+So it processes the payment again. ❌
+
+This is where we'll start getting into real system design.
+
+Our next evolution will be:
+Version 1
+HashMap
+   ↓
+Version 2
+Database
+   ↓
+Version 3
+Redis
+   ↓
+Version 4
+Concurrent requests / race conditions
+   ↓
+Version 5
+Production-grade idempotency
