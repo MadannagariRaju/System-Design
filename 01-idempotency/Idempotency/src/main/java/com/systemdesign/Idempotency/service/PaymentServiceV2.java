@@ -20,7 +20,7 @@ public class PaymentServiceV2 {
     }
 
 
-    public PaymentResponse processPayment(String idempotencyKey, PaymentRequest paymentRequest) {
+    public synchronized PaymentResponse processPayment(String idempotencyKey, PaymentRequest paymentRequest) {
 
         // 1. check database
 
@@ -32,6 +32,17 @@ public class PaymentServiceV2 {
             PaymentResponse paymentResponse = new PaymentResponse(idempotencyRecord.getTransactionId(),idempotencyRecord.getStatus());
             return paymentResponse;
         }
+
+        // delay for testing
+
+        try{
+            log.info("slept for 5 sec's");
+            Thread.sleep(5000);
+        }catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+
 
 
 
