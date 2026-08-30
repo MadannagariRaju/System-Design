@@ -1,6 +1,7 @@
 package com.systemdesign.Idempotency.service;
 
 
+import com.systemdesign.Idempotency.model.IdempotencyStatus;
 import com.systemdesign.Idempotency.model.PaymentRequest;
 import com.systemdesign.Idempotency.model.PaymentResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class PaymentService {
 
         String txnId = "TXN_" + UUID.randomUUID();
 
-        PaymentResponse paymentResponse = new PaymentResponse(txnId,"SUCCESS");
+        PaymentResponse paymentResponse = new PaymentResponse(txnId, IdempotencyStatus.COMPLETED);
 
         idempotencyStore.put(idempotencyKey,paymentResponse);
 

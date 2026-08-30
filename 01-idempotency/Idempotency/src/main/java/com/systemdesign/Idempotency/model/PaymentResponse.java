@@ -11,5 +11,5 @@ import lombok.RequiredArgsConstructor;
 public class PaymentResponse {
 
     private String transactionId;
-    private String status;
+    private IdempotencyStatus status;
 }

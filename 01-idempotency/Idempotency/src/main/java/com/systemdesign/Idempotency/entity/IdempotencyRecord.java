@@ -1,10 +1,14 @@
 package com.systemdesign.Idempotency.entity;
 
+import com.systemdesign.Idempotency.model.IdempotencyStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,15 +26,29 @@ public class IdempotencyRecord {
     @Column(nullable = false, unique = true)
     private  String idempotencyKey;
 
-    @Column(nullable = false)
+    @Column
     private String transactionId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private IdempotencyStatus status;
 
-    public IdempotencyRecord(String idempotencyKey, String transactionId, String status) {
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
+
+    public IdempotencyRecord(String idempotencyKey, String transactionId, IdempotencyStatus status) {
         this.idempotencyKey = idempotencyKey;
         this.transactionId = transactionId;
         this.status = status;
     }
+
+    public IdempotencyRecord(String idempotencyKey, IdempotencyStatus status, LocalDateTime createdAt) {
+        this.idempotencyKey = idempotencyKey;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
 }
